@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择塔罗牌阵 - 塔罗牌在线占卜</title>
+    <meta name="description" content="选择适合您问题的塔罗牌阵，获得更精准的塔罗牌占卜解读，了解您的爱情、事业和人生走向。">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7D56F4', // 主色调，紫色
+                        secondary: '#FFC107', // 辅助色，金色
+                        dark: '#1D1D1F', // 深色背景
+                        light: '#F5F5F7', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            
+            .tarot-card {
+                transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                position: relative;
+                z-index: 1;
+                overflow: hidden;
+                border-radius: 0.75rem;
+                box-shadow: 0 0 20px rgba(125, 86, 244, 0.1);
+                background-size: cover;
+                background-position: center;
+            }
+            
+            .tarot-card:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(120deg, rgba(0,0,0,0.7) 0%, rgba(44,19,99,0.8) 100%);
+                z-index: -1;
+            }
+            
+            .tarot-card:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDIxNSwxNzAsMTAwLDAuMSkiIHN0cm9rZS13aWR0aD0iMC41Ij48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSI1Ii8+PHBhdGggZD0iTTQgNCwyMCAyME00IDIwLDIwIDRNMTIgMiwxMiAyMk0yIDEyLDIyIDEyIi8+PC9nPjwvc3ZnPg==') center/30px 30px repeat;
+                opacity: 0.15;
+                z-index: -1;
+                mix-blend-mode: overlay;
+            }
+            
+            .tarot-card-inner {
+                border: 1px solid rgba(215, 170, 100, 0.3);
+                height: 100%;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                background-clip: padding-box;
+                position: relative;
+                border-radius: 0.5rem;
+                padding: 0.5rem;
+            }
+            
+            .tarot-card-inner:before {
+                content: '';
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                right: -2px;
+                bottom: -2px;
+                background: linear-gradient(45deg, #D7AA64, #EED68F, #D7AA64);
+                z-index: -1;
+                border-radius: 0.75rem;
+                animation: borderShine 6s ease-in-out infinite;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .tarot-card:hover .tarot-card-inner:before {
+                opacity: 0.7;
+            }
+            
+            @keyframes borderShine {
+                0%, 100% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+            }
+            
+            @keyframes floatingAnimation {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-5px); }
+            }
+            
+            @keyframes glowingEffect {
+                0%, 100% { box-shadow: 0 0 15px rgba(215, 170, 100, 0.3); }
+                50% { box-shadow: 0 0 25px rgba(215, 170, 100, 0.5); }
+            }
+            
+            .card-text {
+                font-family: 'Times New Roman', serif;
+                letter-spacing: 1px;
+                text-shadow: 0 0 10px rgba(215, 170, 100, 0.5);
+                font-weight: 600;
+            }
+            
+            .mystic-bg {
+                background: linear-gradient(135deg, #1a1a2e, #16213e, #1a1a2e);
+            }
+            
+            .tarot-card:hover {
+                transform: translateY(-10px) rotate(0deg) scale(1.05);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 20px rgba(215, 170, 100, 0.2);
+            }
+            
+            .card-1 {
+                transform: rotate(-8deg);
+                animation: floatingAnimation 4s ease-in-out infinite;
+            }
+            
+            .card-2 {
+                transform: rotate(0deg);
+                animation: floatingAnimation 4s ease-in-out infinite 0.5s;
+                z-index: 2;
+            }
+            
+            .card-3 {
+                transform: rotate(8deg);
+                animation: floatingAnimation 4s ease-in-out infinite 1s;
+            }
+            
+            .glow-effect {
+                animation: glowingEffect 3s ease-in-out infinite;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans text-dark bg-light min-h-screen flex flex-col">
+    <!-- 移动设备导航菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 bg-dark/95 z-50 flex items-center justify-center transform transition-transform duration-300 translate-x-full">
+        <button id="close-menu" class="absolute top-5 right-5 text-white focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <nav class="flex flex-col items-center space-y-6">
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                <span class="mr-1">👑</span> 会员订阅
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                AI塔罗占卜
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                故事分享
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                问题反馈
+            </a>
+        </nav>
+    </div>
+
+    <!-- 导航栏 -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                <span class="text-xl font-bold">Tarotap</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    <span class="mr-1">👑</span> 会员订阅
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    AI塔罗占卜
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    故事分享
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    问题反馈
+                </a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button id="mobile-menu-btn" class="md:hidden text-dark focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div class="hidden md:block h-8 w-8 rounded-full bg-gradient-to-r from-primary to-purple-300 flex items-center justify-center text-white">
+                    <span class="text-sm font-medium">M</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow">
+        <!-- 选择牌阵区域 -->
+        <section class="py-6 md:py-8 text-center">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <h1 class="text-3xl md:text-4xl font-bold mb-3 flex flex-col items-center justify-center">
+                    <span class="text-gradient bg-gradient-to-r from-purple-500 to-primary block">选择牌阵</span>
+                </h1>
+                
+                <p class="text-gray-600 text-sm md:text-base max-w-2xl mx-auto mb-6">不同的牌阵适合不同类型的问题。我们为您选择了最适合您问题的牌阵。</p>
+                
+                <!-- 默认牌阵展示 -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="text-2xl font-semibold text-primary">时间流牌阵</h2>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">推荐</span>
+                    </div>
+                    
+                    <p class="text-gray-600 text-sm md:text-base mb-6 text-left">
+                        时间流牌阵是一种经典的三张牌阵，代表过去、现在和未来。这种牌阵适合探索问题的时间发展脉络，了解当前状况的来龙去脉，以及未来的可能趋势。特别适合需要时间维度解读的问题。
+                    </p>
+                    
+                    <!-- 牌阵图示 -->
+                    <div class="my-8 relative h-48 flex items-center justify-center mystic-bg rounded-xl p-6">
+                        <!-- 三张牌的牌阵 -->
+                        <div class="relative mx-auto flex justify-center items-center gap-2 md:gap-8">
+                            <div class="tarot-card card-1 h-40 w-28 glow-effect">
+                                <div class="tarot-card-inner">
+                                    <div class="card-content flex flex-col items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-300 mb-2 opacity-80" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="card-text text-amber-200 text-sm">过去</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tarot-card card-2 h-40 w-28 glow-effect">
+                                <div class="tarot-card-inner">
+                                    <div class="card-content flex flex-col items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-300 mb-2 opacity-80" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="card-text text-amber-200 text-sm">现在</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tarot-card card-3 h-40 w-28 glow-effect">
+                                <div class="tarot-card-inner">
+                                    <div class="card-content flex flex-col items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-300 mb-2 opacity-80" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10.293 15.707a1 1 0 010-1.414L14.586 10l-4.293-4.293a1 1 0 111.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                            <path fill-rule="evenodd" d="M4.293 15.707a1 1 0 010-1.414L8.586 10 4.293 5.707a1 1 0 011.414-1.414l5 5a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="card-text text-amber-200 text-sm">未来</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 神秘星光背景装饰 -->
+                        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div class="absolute h-1 w-1 bg-amber-200 rounded-full top-[20%] left-[15%] opacity-40"></div>
+                            <div class="absolute h-1 w-1 bg-amber-200 rounded-full top-[30%] left-[75%] opacity-30"></div>
+                            <div class="absolute h-1 w-1 bg-amber-200 rounded-full top-[70%] left-[25%] opacity-50"></div>
+                            <div class="absolute h-1 w-1 bg-amber-200 rounded-full top-[50%] left-[85%] opacity-40"></div>
+                            <div class="absolute h-1 w-1 bg-amber-200 rounded-full top-[80%] left-[65%] opacity-30"></div>
+                            <div class="absolute h-1 w-1 bg-amber-200 rounded-full top-[10%] left-[45%] opacity-50"></div>
+                            <div class="absolute h-2 w-2 bg-amber-200 rounded-full top-[40%] left-[5%] opacity-10"></div>
+                            <div class="absolute h-2 w-2 bg-amber-200 rounded-full top-[60%] left-[55%] opacity-10"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 按钮区域 -->
+                    <div class="flex flex-col md:flex-row gap-3 justify-center">
+                        <a href="draw-cards.html" id="start-draw" class="inline-block bg-gradient-to-r from-primary to-purple-800 text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:shadow-xl hover:translate-y-[-2px] transition-all duration-200 relative overflow-hidden group">
+                            <span class="relative z-10">开始抽牌</span>
+                            <span class="absolute inset-0 bg-gradient-to-r from-primary/80 to-purple-700/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        </a>
+                        <button id="show-other-spreads" class="inline-block bg-white border border-primary text-primary font-medium py-3 px-8 rounded-lg hover:bg-primary/5 transition-colors">
+                            选择其他牌阵
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 其他牌阵选择区域 (默认隐藏) -->
+                <div id="other-spreads" class="hidden bg-white rounded-xl shadow-md p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-left">选择其他牌阵</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- 牌阵1 -->
+                        <div class="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer spread-option">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-lg">凯尔特十字牌阵</h4>
+                                <span class="text-xs text-gray-500">5张牌</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 text-left">适合复杂问题的综合分析，提供多角度视角。</p>
+                            <div class="flex justify-center">
+                                <div class="grid grid-cols-3 gap-1">
+                                    <div class="h-6 w-4"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 牌阵2 -->
+                        <div class="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer spread-option">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-lg">关系牌阵</h4>
+                                <span class="text-xs text-gray-500">4张牌</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 text-left">专为解析人际关系设计，分析双方视角和关系走向。</p>
+                            <div class="flex justify-center">
+                                <div class="flex gap-1">
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                    <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 牌阵3 -->
+                        <div class="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer spread-option">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-lg">事业与机遇牌阵</h4>
+                                <span class="text-xs text-gray-500">3张牌</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 text-left">聚焦职业发展和机会，指出优势、挑战和建议。</p>
+                            <div class="flex justify-center gap-1">
+                                <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                                <div class="h-6 w-4 bg-gray-300 rounded-sm"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 牌阵4 -->
+                        <div class="border border-primary rounded-lg p-4 bg-primary/5 shadow-md cursor-pointer spread-option">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-lg">时间流牌阵</h4>
+                                <span class="text-xs text-gray-500">3张牌</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2 text-left">展示问题的时间发展脉络，了解过去、现在和未来。</p>
+                            <div class="flex justify-center gap-1">
+                                <div class="h-6 w-4 bg-primary/40 rounded-sm"></div>
+                                <div class="h-6 w-4 bg-primary/40 rounded-sm"></div>
+                                <div class="h-6 w-4 bg-primary/40 rounded-sm"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 用户问题显示区域 -->
+                <div class="mt-6 bg-gray-50 rounded-lg p-4 text-center">
+                    <h3 class="text-gray-500 text-sm mb-1">您的问题</h3>
+                    <p id="user-question" class="text-gray-800 font-medium">加载中...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关于我们</h3>
+                    <p class="text-gray-400 text-sm">Tarotap是一个专业的在线塔罗牌占卜平台，致力于通过现代科技与古老智慧的结合，为用户提供准确、便捷的塔罗牌解读服务。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">快速链接</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">塔罗牌占卜</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">会员服务</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">学习中心</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">联系我们</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-gray-400">contact@aihinto.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Tarotap. 版权所有 Michael</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 移动设备菜单控制
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+        });
+        
+        // 显示和隐藏其他牌阵选择
+        const showOtherSpreadsBtn = document.getElementById('show-other-spreads');
+        const otherSpreads = document.getElementById('other-spreads');
+        
+        showOtherSpreadsBtn.addEventListener('click', () => {
+            otherSpreads.classList.toggle('hidden');
+            if (!otherSpreads.classList.contains('hidden')) {
+                otherSpreads.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+        
+        // 从URL获取查询参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const master = urlParams.get('master');
+        const question = urlParams.get('question');
+        
+        // 显示用户问题
+        const userQuestionEl = document.getElementById('user-question');
+        if (question) {
+            userQuestionEl.textContent = decodeURIComponent(question);
+        } else {
+            userQuestionEl.textContent = "没有提供问题";
+        }
+        
+        // 选择牌阵并前往抽牌页面
+        const spreadOptions = document.querySelectorAll('.spread-option');
+        const startDrawBtn = document.getElementById('start-draw');
+        
+        // 修改默认抽牌按钮的href
+        if (master && question) {
+            startDrawBtn.href = `draw-cards.html?master=${master}&question=${encodeURIComponent(question)}&spread=time-flow`;
+        }
+        
+        // 为其他牌阵选项添加点击事件
+        spreadOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // 移除之前选中的样式
+                spreadOptions.forEach(opt => {
+                    opt.classList.remove('border-primary', 'bg-primary/5', 'shadow-md');
+                    opt.classList.add('border-gray-200');
+                });
+                
+                // 添加当前选中的样式
+                option.classList.remove('border-gray-200');
+                option.classList.add('border-primary', 'bg-primary/5', 'shadow-md');
+                
+                // 获取所选牌阵的名称和参数
+                const spreadName = option.querySelector('h4').textContent.toLowerCase().replace(/\s+/g, '-');
+                
+                // 更新抽牌按钮的链接
+                if (master && question) {
+                    startDrawBtn.href = `draw-cards.html?master=${master}&question=${encodeURIComponent(question)}&spread=${encodeURIComponent(spreadName)}`;
+                }
+                
+                // 滚动到页面顶部的开始抽牌按钮
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+        
+        // 为塔罗牌添加点击交互效果
+        const tarotCards = document.querySelectorAll('.tarot-card');
+        tarotCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // 添加点击效果：卡片短暂放大并发光
+                card.style.transform = 'scale(1.1) translateY(-15px)';
+                card.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(215, 170, 100, 0.4)';
+                
+                // 一段时间后恢复
+                setTimeout(() => {
+                    card.style.transform = '';
+                    card.style.boxShadow = '';
+                }, 500);
+            });
+        });
+        
+        // 为星光点添加随机闪烁效果
+        const stars = document.querySelectorAll('.mystic-bg div[class^="absolute h-"]');
+        stars.forEach(star => {
+            // 随机设置闪烁动画
+            const duration = 3 + Math.random() * 4; // 3-7秒的随机时长
+            const delay = Math.random() * 5; // 0-5秒的随机延迟
+            
+            star.style.animation = `starTwinkle ${duration}s ease-in-out infinite ${delay}s`;
+        });
+        
+        // 创建闪烁动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes starTwinkle {
+                0%, 100% { opacity: 0.1; }
+                50% { opacity: 0.7; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 

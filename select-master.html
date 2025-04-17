@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选择您的塔罗师 - 塔罗牌在线占卜</title>
+    <meta name="description" content="选择您喜欢的塔罗师风格，获得专属的塔罗牌占卜解读，了解您的爱情、事业和人生走向。">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7D56F4', // 主色调，紫色
+                        secondary: '#FFC107', // 辅助色，金色
+                        dark: '#1D1D1F', // 深色背景
+                        light: '#F5F5F7', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans text-dark bg-light min-h-screen flex flex-col">
+    <!-- 移动设备导航菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 bg-dark/95 z-50 flex items-center justify-center transform transition-transform duration-300 translate-x-full">
+        <button id="close-menu" class="absolute top-5 right-5 text-white focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <nav class="flex flex-col items-center space-y-6">
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                <span class="mr-1">👑</span> 会员订阅
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                AI塔罗占卜
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                故事分享
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                问题反馈
+            </a>
+        </nav>
+    </div>
+
+    <!-- 导航栏 -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                <span class="text-xl font-bold">Tarotap</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    <span class="mr-1">👑</span> 会员订阅
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    AI塔罗占卜
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    故事分享
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    问题反馈
+                </a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button id="mobile-menu-btn" class="md:hidden text-dark focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div class="hidden md:block h-8 w-8 rounded-full bg-gradient-to-r from-primary to-purple-300 flex items-center justify-center text-white">
+                    <span class="text-sm font-medium">M</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow">
+        <!-- 选择塔罗师标题区域 -->
+        <section class="py-5 md:py-8 text-center">
+            <div class="container mx-auto px-4">
+                <h1 class="text-2xl md:text-3xl font-bold mb-1 flex items-center justify-center">
+                    <span>选择你的</span>
+                    <span class="text-gradient bg-gradient-to-r from-primary to-pink-500 ml-2">AI 塔罗师</span>
+                </h1>
+                
+                <!-- 免费次数提示 -->
+                <div class="max-w-lg mx-auto bg-gray-50 rounded-lg p-3 mt-3 mb-2">
+                    <div class="flex items-center justify-between">
+                        <p class="text-gray-700 text-xs md:text-sm">今日剩余免费占卜次数: <span class="font-medium">0 次</span></p>
+                        <button class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                        </button>
+                    </div>
+                    <a href="membership.html" class="block w-full bg-primary text-white text-center py-1.5 px-4 mt-2 rounded-md hover:bg-primary/90 transition-colors hover:shadow-md hover:translate-y-[-2px] transition-all duration-200">
+                        解锁无限次占卜
+                    </a>
+                    <p class="text-xs text-gray-500 text-center mt-1">每日凌晨00:08重置次数</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 塔罗师选择区域 -->
+        <section class="pt-0 pb-10">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                    </svg>
+                    <h2 class="text-xl font-semibold text-gray-800">选择您的塔罗占卜师</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 塔罗师 1 - 奇灵 -->
+                    <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex">
+                            <div class="w-1/3">
+                                <img src="quin1.jpg" alt="奇灵塔罗师" class="h-full w-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="text-lg font-semibold">奇灵</h3>
+                                    <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded-full">新用户适用</span>
+                                </div>
+                                <p class="text-gray-600 text-xs md:text-sm mb-3">
+                                    别担惊我说好听话，但绝对句句扎心。想听彩虹屁可以滚了，想被智慧的摇醒来找我
+                                </p>
+                                <a href="reading.html?master=qiling" class="block w-full bg-primary text-white text-center py-1.5 px-4 rounded-md hover:bg-primary/90 transition-colors hover:shadow-md hover:translate-y-[-2px] transition-all duration-200">
+                                    选择此塔罗师
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 塔罗师 2 - 星月奶奶 -->
+                    <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex">
+                            <div class="w-1/3">
+                                <img src="quin1.jpg" alt="星月奶奶塔罗师" class="h-full w-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="text-lg font-semibold">星月奶奶</h3>
+                                    <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded-full">新用户适用</span>
+                                </div>
+                                <p class="text-gray-600 text-xs md:text-sm mb-3">
+                                    德高望重的塔罗大师，洞察如鹰眼,指引你北辰。需智慧的孩子,来奶奶这里
+                                </p>
+                                <a href="reading.html?master=xingyue" class="block w-full bg-primary text-white text-center py-1.5 px-4 rounded-md hover:bg-primary/90 transition-colors hover:shadow-md hover:translate-y-[-2px] transition-all duration-200">
+                                    选择此塔罗师
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 塔罗师 3 - 恋语 -->
+                    <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex">
+                            <div class="w-1/3">
+                                <img src="quin1.jpg" alt="恋语塔罗师" class="h-full w-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="text-lg font-semibold">恋语</h3>
+                                    <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded-full">新用户适用</span>
+                                </div>
+                                <p class="text-gray-600 text-xs md:text-sm mb-3">
+                                    擅长爱情占卜，她以温和却直真的方式解读感情，让每次占卜都像一场知心的对话
+                                </p>
+                                <a href="reading.html?master=lianyu" class="block w-full bg-primary text-white text-center py-1.5 px-4 rounded-md hover:bg-primary/90 transition-colors hover:shadow-md hover:translate-y-[-2px] transition-all duration-200">
+                                    选择此塔罗师
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 塔罗师 4 - 月瑶 -->
+                    <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex">
+                            <div class="w-1/3">
+                                <img src="quin1.jpg" alt="月瑶塔罗师" class="h-full w-full object-cover">
+                            </div>
+                            <div class="w-2/3 p-4">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="text-lg font-semibold">月瑶</h3>
+                                </div>
+                                <p class="text-gray-600 text-xs md:text-sm mb-3">
+                                    温柔梦幻的新人塔罗师,为迷惘的你指引光明。想被温柔呵护的,来这里吧
+                                </p>
+                                <a href="reading.html?master=yueyao" class="block w-full bg-primary text-white text-center py-1.5 px-4 rounded-md hover:bg-primary/90 transition-colors hover:shadow-md hover:translate-y-[-2px] transition-all duration-200">
+                                    选择此塔罗师
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关于我们</h3>
+                    <p class="text-gray-400 text-sm">Tarotap是一个专业的在线塔罗牌占卜平台，致力于通过现代科技与古老智慧的结合，为用户提供准确、便捷的塔罗牌解读服务。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">快速链接</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">塔罗牌占卜</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">会员服务</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">学习中心</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">联系我们</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-gray-400">contact@aihinto.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Tarotap. 版权所有 Michael</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 移动设备菜单控制
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+        });
+    </script>
+</body>
+</html> 

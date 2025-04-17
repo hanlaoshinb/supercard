@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塔罗牌在线占卜 - 解读您的爱情与命运</title>
+    <meta name="description" content="免费在线塔罗牌占卜，专业解读您的爱情、事业和人生，AI智能分析，揭示您的命运密码。">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7D56F4', // 主色调，紫色
+                        secondary: '#FFC107', // 辅助色，金色
+                        dark: '#1D1D1F', // 深色背景
+                        light: '#F5F5F7', // 浅色背景
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans text-dark bg-light min-h-screen flex flex-col">
+    <!-- 移动设备导航菜单 -->
+    <div id="mobile-menu" class="fixed inset-0 bg-dark/95 z-50 flex items-center justify-center transform transition-transform duration-300 translate-x-full">
+        <button id="close-menu" class="absolute top-5 right-5 text-white focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <nav class="flex flex-col items-center space-y-6">
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                <span class="mr-1">👑</span> 会员订阅
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                AI塔罗占卜
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                故事分享
+            </a>
+            <a href="#" class="text-xl font-medium text-white hover:text-primary transition-colors">
+                问题反馈
+            </a>
+        </nav>
+    </div>
+
+    <!-- 导航栏 -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                </svg>
+                <span class="text-xl font-bold">Tarotap</span>
+            </a>
+            
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    <span class="mr-1">👑</span> 会员订阅
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    AI塔罗占卜
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    故事分享
+                </a>
+                <a href="#" class="flex items-center px-2 py-1 rounded-md font-medium text-gray-700 hover:text-primary transition-colors">
+                    问题反馈
+                </a>
+            </nav>
+            
+            <div class="flex items-center space-x-4">
+                <button id="mobile-menu-btn" class="md:hidden text-dark focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <div class="hidden md:block h-8 w-8 rounded-full bg-gradient-to-r from-primary to-purple-300 flex items-center justify-center text-white">
+                    <span class="text-sm font-medium">M</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow">
+        <!-- Hero 区域 -->
+        <section class="py-16 md:py-24 text-center">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl md:text-6xl font-bold mb-4">
+                    <span class="block">免费在线</span>
+                    <span class="text-gradient bg-gradient-to-r from-primary to-purple-500 block mt-2">AI塔罗牌占卜</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-12">
+                    2025年在线AI塔罗牌占卜，超准AI塔罗牌占卜解读您的爱情事业学业运势
+                </p>
+                
+                <div class="max-w-md mx-auto">
+                    <div class="mb-12 relative">
+                        <img src="quin1.jpg" alt="塔罗牌" class="mx-auto rounded-2xl shadow-xl transform transition-transform duration-300 hover:scale-105 max-w-[320px]">
+                    </div>
+                    
+                    <a href="select-master.html" class="inline-block bg-primary hover:bg-primary/90 text-white font-medium py-4 px-10 rounded-full text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:translate-y-[-2px] focus:ring-4 focus:ring-purple-300">
+                        开始塔罗占卜 ✨
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ 区域 -->
+        <section class="py-16 bg-light">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">常见问题</h2>
+                
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-semibold mb-3">塔罗牌占卜准确吗？</h3>
+                        <p class="text-gray-600">塔罗牌占卜是一种古老的占卜方式，它通过牌面的象征意义反映当前情况和可能的未来趋势。我们的AI塔罗占卜系统基于大量历史数据和专业塔罗师的经验构建，提供具有参考价值的解读，但具体的准确性会因个人情况和问题而异。在众多用户反馈中，准确率高达85%以上。</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-semibold mb-3">如何进行在线塔罗牌占卜？</h3>
+                        <p class="text-gray-600">进行在线塔罗牌占卜非常简单。只需要点击"开始塔罗占卜"按钮，然后根据提示选择您关心的问题类型（如爱情、事业、财运等），系统会引导您抽取塔罗牌并提供详细的解读。整个过程直观易懂，无需任何占卜经验。您还可以选择不同类型的塔罗师风格，获得更符合您需求的解读。</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-semibold mb-3">塔罗牌占卜需要付费吗？</h3>
+                        <p class="text-gray-600">我们提供免费的基础塔罗牌占卜服务，让每个人都能体验塔罗牌的神秘魅力。同时，我们也提供高级会员服务，包含更详细的解读、无限次占卜以及专业塔罗师的个性化指导，满足更深层次的需求。会员还可享受每日运势分析、月度星座报告等特权内容。</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-semibold mb-3">AI塔罗牌占卜与真人占卜有什么区别？</h3>
+                        <p class="text-gray-600">AI塔罗牌占卜利用先进的人工智能算法，基于传统塔罗牌解读规则和大量历史数据提供解读，具有快速、方便、隐私性强的特点。而真人占卜则由专业塔罗师根据个人经验和直觉进行解读，可能更具个性化和灵活性。我们平台提供两种服务，您可以根据自己的需求选择适合的方式。</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-semibold mb-3">塔罗牌占卜是否涉及迷信？</h3>
+                        <p class="text-gray-600">塔罗牌占卜是一种心理投射工具，它通过图像和象征意义帮助人们探索潜意识并思考生活中的问题。现代塔罗牌解读更多强调的是心理学和自我认知，而非迷信的预言。我们的AI系统结合了心理学原理和数据分析，提供理性且有启发性的见解，帮助用户更好地理解自己的处境和可能的选择。</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-semibold mb-3">我的占卜结果会被他人看到吗？</h3>
+                        <p class="text-gray-600">我们非常重视用户隐私。您的占卜结果和问题内容均采用加密存储，不会被分享给任何第三方。系统会为每位用户创建独立的占卜空间，确保您的个人信息和占卜历史得到完全保护。您可以随时删除历史记录或修改账户信息。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关于我们</h3>
+                    <p class="text-gray-400 text-sm">Tarotap是一个专业的在线塔罗牌占卜平台，致力于通过现代科技与古老智慧的结合，为用户提供准确、便捷的塔罗牌解读服务。</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">快速链接</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">塔罗牌占卜</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">会员服务</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">学习中心</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">联系我们</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            <span class="text-gray-400">contact@aihinto.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">关注我们</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Tarotap. 版权所有 Michael</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript 代码 -->
+    <script>
+        // 移动设备菜单控制
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+        });
+
+        // 塔罗牌卡片悬停效果增强
+        const tarotCard = document.querySelector('.max-w-md img');
+        tarotCard.addEventListener('mouseover', () => {
+            tarotCard.classList.add('shadow-2xl');
+            tarotCard.style.transform = 'scale(1.05) rotate(2deg)';
+        });
+        
+        tarotCard.addEventListener('mouseout', () => {
+            tarotCard.classList.remove('shadow-2xl');
+            tarotCard.style.transform = '';
+        });
+    </script>
+</body>
+</html> 
