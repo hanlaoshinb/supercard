@@ -87,66 +87,124 @@
             .floating {
                 animation: float 3s ease-in-out infinite;
             }
+
+            .card-wrapper {
+                position: relative;
+                overflow: hidden;
+            }
             
             .mystic-bg {
                 background: linear-gradient(135deg, #1a1a2e, #16213e, #1a1a2e);
             }
             
-            .tarot-canvas-container {
-                position: relative;
-                width: 100%;
-                height: 500px;
-                overflow: hidden;
-                border-radius: 1rem;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            }
-            
-            .slots-container {
-                display: flex;
-                justify-content: center;
-                gap: 2rem;
-                margin-top: 1.5rem;
-            }
-            
-            .tarot-slot {
-                width: 100px;
-                height: 160px;
-                border: 2px dashed rgba(215, 170, 100, 0.4);
-                border-radius: 0.5rem;
+            .card-slot {
+                border: 2px dashed rgba(215, 170, 100, 0.3);
+                border-radius: 0.75rem;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: rgba(215, 170, 100, 0.6);
-                font-size: 0.8rem;
-                font-family: 'Times New Roman', serif;
+                color: rgba(215, 170, 100, 0.5);
+                background: rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
                 position: relative;
+            }
+            
+            .card-slot.highlight {
+                border-color: rgba(215, 170, 100, 0.8);
+                box-shadow: 0 0 15px rgba(215, 170, 100, 0.4);
+            }
+            
+            .card-slot.filled {
+                border-style: solid;
+                border-color: rgba(215, 170, 100, 0.5);
+                background: rgba(0, 0, 0, 0.3);
+            }
+            
+            .card-slot.filled span {
+                opacity: 0;
+            }
+
+            .canvas-container {
+                position: relative;
+                width: 100%;
+                height: 300px;
+                overflow: hidden;
+            }
+            
+            #tarotCanvas {
+                cursor: pointer;
+                display: block;
+                margin: 0 auto;
+                background: transparent;
+            }
+            
+            .card-info-panel {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 300px;
+                background: rgba(26, 26, 46, 0.95);
+                border: 1px solid rgba(215, 170, 100, 0.5);
+                border-radius: 15px;
+                padding: 20px;
+                z-index: 100;
+                box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(215, 170, 100, 0.4);
+                display: none;
+                backdrop-filter: blur(10px);
+            }
+            
+            .card-info-panel img {
+                width: 120px;
+                margin: 0 auto 15px;
+                display: block;
+                border-radius: 5px;
+                border: 1px solid rgba(215, 170, 100, 0.5);
+            }
+            
+            .card-info-panel h3 {
+                color: rgb(215, 170, 100);
+                font-size: 1.25rem;
+                text-align: center;
+                margin-bottom: 10px;
+                font-weight: 600;
+            }
+            
+            .card-info-panel p {
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin-bottom: 15px;
+            }
+            
+            .card-info-panel button {
+                background: linear-gradient(45deg, #7D56F4, #9678FF);
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 0.9rem;
+                cursor: pointer;
+                width: 100%;
                 transition: all 0.3s ease;
             }
             
-            .tarot-slot:before {
-                content: '';
-                position: absolute;
+            .card-info-panel button:hover {
+                background: linear-gradient(45deg, #6A46E5, #8A6BFF);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+            
+            .overlay {
+                position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: linear-gradient(135deg, rgba(26, 26, 46, 0.4), rgba(22, 33, 62, 0.4));
-                border-radius: 0.4rem;
-                z-index: -1;
-            }
-            
-            .tarot-slot.active {
-                border-color: rgba(215, 170, 100, 0.8);
-                box-shadow: 0 0 15px rgba(215, 170, 100, 0.3);
-            }
-            
-            .fade-in {
-                animation: fadeIn 0.5s ease-in-out forwards;
-            }
-            
-            @keyframes fadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(3px);
+                z-index: 90;
+                display: none;
             }
         }
     </style>
@@ -222,7 +280,7 @@
                     <span class="text-gradient bg-gradient-to-r from-purple-500 to-primary block">时间流牌阵</span>
                 </h1>
                 
-                <p class="text-gray-600 text-sm md:text-base max-w-2xl mx-auto mb-6">从塔罗牌中抽取三张牌，揭示过去、现在和未来的讯息。</p>
+                <p class="text-gray-600 text-sm md:text-base max-w-2xl mx-auto mb-6">在牌列中选择并点击三张塔罗牌，揭示过去、现在和未来的讯息。</p>
                 
                 <!-- 用户问题显示 -->
                 <div class="bg-white rounded-xl shadow-sm p-4 mb-8">
@@ -230,22 +288,33 @@
                     <p id="user-question" class="text-gray-800 font-medium">加载中...</p>
                 </div>
                 
+                <!-- 已选择卡牌数量指示器 -->
+                <div class="mb-4 text-center">
+                    <span class="text-white bg-primary/90 px-4 py-1.5 rounded-full font-medium" id="cards-counter">已选择: 0/3</span>
+                </div>
+                
                 <!-- Canvas 抽牌区域 -->
-                <div class="mystic-bg rounded-xl p-4 mb-6 fade-in">
-                    <div class="tarot-canvas-container">
+                <div class="card-wrapper mystic-bg rounded-xl overflow-hidden shadow-lg">
+                    <div class="canvas-container">
                         <canvas id="tarotCanvas"></canvas>
                     </div>
                     
-                    <!-- 卡槽区域 -->
-                    <div class="slots-container">
-                        <div class="tarot-slot" data-position="过去">过去</div>
-                        <div class="tarot-slot" data-position="现在">现在</div>
-                        <div class="tarot-slot" data-position="未来">未来</div>
+                    <!-- 卡牌槽位 -->
+                    <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-8 p-6">
+                        <div class="card-slot relative h-44 w-28 md:h-52 md:w-32 flex items-center justify-center" data-position="过去">
+                            <span class="opacity-50">过去</span>
+                        </div>
+                        <div class="card-slot relative h-44 w-28 md:h-52 md:w-32 flex items-center justify-center" data-position="现在">
+                            <span class="opacity-50">现在</span>
+                        </div>
+                        <div class="card-slot relative h-44 w-28 md:h-52 md:w-32 flex items-center justify-center" data-position="未来">
+                            <span class="opacity-50">未来</span>
+                        </div>
                     </div>
                 </div>
                 
                 <!-- 指引文字 -->
-                <p id="draw-instruction" class="text-primary font-medium mb-6">请从牌列中选择三张塔罗牌</p>
+                <p id="draw-instruction" class="text-primary font-medium my-6">请在牌列中选择三张塔罗牌</p>
                 
                 <!-- 查看结果按钮 (初始隐藏) -->
                 <div id="view-result-btn" class="hidden">
@@ -257,6 +326,17 @@
             </div>
         </section>
     </main>
+    
+    <!-- 卡牌信息面板 -->
+    <div class="card-info-panel" id="cardInfoPanel">
+        <img src="" alt="塔罗牌" id="cardImage">
+        <h3 id="cardName">塔罗牌名称</h3>
+        <p id="cardDescription">塔罗牌描述内容...</p>
+        <button id="placeCardBtn">放置卡牌</button>
+    </div>
+    
+    <!-- 背景遮罩 -->
+    <div class="overlay" id="overlay"></div>
 
     <!-- 页脚 -->
     <footer class="bg-dark text-white py-12">
@@ -358,388 +438,628 @@
             titleEl.textContent = capitalizedSpread + '牌阵';
         }
         
-        // 塔罗牌Canvas相关代码
+        // Canvas 相关变量
         const canvas = document.getElementById('tarotCanvas');
         const ctx = canvas.getContext('2d');
-        const container = document.querySelector('.tarot-canvas-container');
-        
-        // 调整canvas尺寸以适应容器
-        function resizeCanvas() {
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
-            
-            // 如果卡片已经初始化，重新绘制
-            if (typeof drawTarotCards === 'function' && cards.length > 0) {
-                drawTarotCards();
-            }
-        }
-        
-        // 监听窗口大小变化
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-        
-        // 定义塔罗牌数据
-        const tarotCardNames = [
-            "愚者", "魔术师", "女祭司", "女皇", "皇帝", "教皇", "恋人", "战车", 
-            "力量", "隐者", "命运之轮", "正义", "悬吊者", "死神", "节制", "恶魔", 
-            "塔", "星星", "月亮", "太阳", "审判", "世界"
-        ];
-        
-        // 生成随机卡牌数据
-        const generateRandomTarotCards = (count) => {
-            const cards = [];
-            for (let i = 0; i < count; i++) {
-                const randomIndex = Math.floor(Math.random() * tarotCardNames.length);
-                cards.push({
-                    id: i,
-                    name: tarotCardNames[randomIndex],
-                    x: 0,  // 初始x位置
-                    y: 0,  // 初始y位置
-                    width: 80,  // 卡片宽度
-                    height: 120, // 卡片高度
-                    isHovered: false,
-                    isSelected: false,
-                    isPlaced: false,
-                    slotPosition: null,
-                    animationProgress: 0,
-                    targetX: 0,
-                    targetY: 0,
-                    angle: 0
-                });
-            }
-            return cards;
-        };
-        
-        // 初始化变量
-        let cards = generateRandomTarotCards(12);
-        let hoveredCard = null;
-        let selectedCard = null;
-        let currentAnimatingCard = null;
-        let slots = document.querySelectorAll('.tarot-slot');
-        let drawnCards = 0;
+        const cardsCounter = document.getElementById('cards-counter');
         const drawInstruction = document.getElementById('draw-instruction');
         const viewResultBtn = document.getElementById('view-result-btn');
+        const cardSlots = document.querySelectorAll('.card-slot');
+        const cardInfoPanel = document.getElementById('cardInfoPanel');
+        const overlay = document.getElementById('overlay');
+        const cardImage = document.getElementById('cardImage');
+        const cardName = document.getElementById('cardName');
+        const cardDescription = document.getElementById('cardDescription');
+        const placeCardBtn = document.getElementById('placeCardBtn');
         
-        // 计算卡片在牌列中的位置
-        function calculateCardPositions() {
-            const totalWidth = cards.length * (cards[0].width * 0.5) + cards[0].width * 0.5;
-            const startX = (canvas.width - totalWidth) / 2;
+        // 塔罗牌数据
+        const tarotCardNames = [
+            {name: "愚者", description: "代表新的开始和无限可能，象征着自由、冒险和潜力。意味着需要开放心态面对未知事物。"},
+            {name: "魔术师", description: "象征创造力和主动性，代表将想法转化为行动的能力。提示你有能力掌控局面，实现目标。"},
+            {name: "女祭司", description: "象征直觉和潜意识，提示你倾听内心的声音，相信自己的感觉。建议保持耐心，等待更多信息显现。"},
+            {name: "女皇", description: "代表丰盛、滋养和创造，象征着爱、和谐与安全感。提示你关注物质与精神的平衡。"},
+            {name: "皇帝", description: "象征权威和控制，代表结构、稳定和秩序。提示你需要更有条理地处理事务，建立明确的界限。"},
+            {name: "教皇", description: "代表传统和精神指引，象征遵循既定规则与道德标准。提示你寻求智慧指导或尊重传统价值观。"},
+            {name: "恋人", description: "象征关系和选择，代表爱情、和谐与价值观的统一。提示你面临重要选择，需要全面考虑。"},
+            {name: "战车", description: "象征决心和胜利，代表通过自控和专注实现目标。提示你坚持不懈，克服挑战，保持前进。"},
+            {name: "力量", description: "代表内在力量和勇气，象征通过耐心和自信克服困难。提示你用温和而坚定的方式解决问题。"},
+            {name: "隐者", description: "象征内省和寻找内在智慧，代表独处和反思的价值。提示你需要时间沉思，寻找内心的答案。"},
+            {name: "命运之轮", description: "代表命运变化和生命周期，象征着转变和机会。提示你接受变化，理解生活的循环本质。"},
+            {name: "正义", description: "象征平衡和诚实，代表公平、真理和法律。提示你要客观审视情况，寻求平衡的解决方案。"},
+            {name: "悬吊者", description: "代表牺牲和新视角，象征放手和接受。提示你需要改变视角或暂停行动，获得新的理解。"},
+            {name: "死神", description: "象征转变和结束，代表一个阶段的完结和新阶段的开始。提示你需要放下过去，迎接转变。"},
+            {name: "节制", description: "代表平衡和适度，象征和谐融合与自我控制。提示你需要耐心、适度和平衡的方法。"},
+            {name: "恶魔", description: "象征束缚和物质执着，代表欲望和依附。提示你需要认识到自己的限制和不健康的模式。"},
+            {name: "塔", description: "代表突然变化和启示，象征颠覆和解放。提示你可能面临意外的转变，需要接受新的现实。"},
+            {name: "星星", description: "象征希望和灵感，代表内心平静和精神更新。提示你要保持信心，相信未来会更美好。"},
+            {name: "月亮", description: "代表直觉和潜意识，象征恐惧和迷惑。提示你需要面对内心深处的情感和不安。"},
+            {name: "太阳", description: "象征成功和活力，代表喜悦和清晰。提示你即将进入一个充满正能量和成功的时期。"},
+            {name: "审判", description: "代表觉醒和更新，象征重生和转变。提示你需要诚实面对自己，接受真正的自我。"},
+            {name: "世界", description: "象征完成和整合，代表成就和圆满。提示你已经达到了一个重要的里程碑，完成了一个周期。"}
+        ];
+        
+        // 塔罗牌卡牌类
+        class TarotCard {
+            constructor(id, name, description) {
+                this.id = id;
+                this.name = name;
+                this.description = description;
+                this.x = 0;
+                this.y = 0;
+                this.width = 70;
+                this.height = 112;
+                this.selected = false;
+                this.highlighted = false;
+                this.placed = false;
+                this.position = null; // 过去、现在、未来
+                this.angle = 0; // 旋转角度
+                this.currentScale = 1; // 当前缩放
+                this.targetPosition = { x: 0, y: 0 }; // 动画目标位置
+                this.animating = false;
+                this.slotElement = null; // 关联的槽位DOM元素
+            }
             
-            cards.forEach((card, index) => {
-                if (!card.isPlaced) {
-                    card.x = startX + index * (card.width * 0.5);
-                    card.y = canvas.height / 2 - card.height / 2;
+            draw(ctx) {
+                ctx.save();
+                
+                // 移动到卡牌中心点
+                ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+                
+                // 应用旋转
+                ctx.rotate(this.angle * Math.PI / 180);
+                
+                // 应用缩放
+                ctx.scale(this.currentScale, this.currentScale);
+                
+                // 绘制卡牌背景
+                ctx.shadowColor = this.highlighted ? 'rgba(215, 170, 100, 0.7)' : 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = this.highlighted ? 15 : 5;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 2;
+                
+                // 卡牌背面
+                const gradient = ctx.createLinearGradient(-this.width/2, -this.height/2, this.width/2, this.height/2);
+                gradient.addColorStop(0, '#422e83');
+                gradient.addColorStop(1, '#7D56F4');
+                
+                ctx.fillStyle = gradient;
+                ctx.roundRect(-this.width/2, -this.height/2, this.width, this.height, 5);
+                ctx.fill();
+                
+                // 卡牌边框
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = this.highlighted ? 'rgba(215, 170, 100, 0.8)' : 'rgba(215, 170, 100, 0.3)';
+                ctx.roundRect(-this.width/2, -this.height/2, this.width, this.height, 5);
+                ctx.stroke();
+                
+                // 卡牌花纹
+                ctx.lineWidth = 0.5;
+                ctx.strokeStyle = 'rgba(215, 170, 100, 0.2)';
+                ctx.roundRect(-this.width/2 + 3, -this.height/2 + 3, this.width - 6, this.height - 6, 3);
+                ctx.stroke();
+                
+                // 卡牌星星图案
+                ctx.fillStyle = 'rgba(215, 170, 100, 0.3)';
+                this.drawStar(ctx, 0, 0, 5, 10, 5);
+                
+                ctx.restore();
+            }
+            
+            drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+                let rot = Math.PI / 2 * 3;
+                let x = cx;
+                let y = cy;
+                let step = Math.PI / spikes;
+                
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - outerRadius);
+                
+                for (let i = 0; i < spikes; i++) {
+                    x = cx + Math.cos(rot) * outerRadius;
+                    y = cy + Math.sin(rot) * outerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                    
+                    x = cx + Math.cos(rot) * innerRadius;
+                    y = cy + Math.sin(rot) * innerRadius;
+                    ctx.lineTo(x, y);
+                    rot += step;
+                }
+                
+                ctx.lineTo(cx, cy - outerRadius);
+                ctx.closePath();
+                ctx.fill();
+            }
+            
+            isMouseOver(mouseX, mouseY) {
+                return mouseX >= this.x && mouseX <= this.x + this.width &&
+                       mouseY >= this.y && mouseY <= this.y + this.height;
+            }
+        }
+        
+        // 主应用类
+        class TarotApp {
+            constructor() {
+                this.cards = [];
+                this.selectedCards = [];
+                this.currentCard = null;
+                this.mouseX = 0;
+                this.mouseY = 0;
+                this.canvasWidth = 0;
+                this.canvasHeight = 0;
+                this.cardWidth = 70;
+                this.cardHeight = 112;
+                this.cardGap = 10;
+                this.isDragging = false;
+                this.isAnimating = false;
+                this.currentSlot = null;
+                
+                this.init();
+            }
+            
+            init() {
+                // 调整Canvas大小
+                this.resizeCanvas();
+                
+                // 创建塔罗牌
+                this.createCards();
+                
+                // 设置事件监听
+                this.setupEventListeners();
+                
+                // 开始动画循环
+                this.animate();
+            }
+            
+            resizeCanvas() {
+                const container = canvas.parentElement;
+                this.canvasWidth = container.clientWidth;
+                this.canvasHeight = container.clientHeight;
+                
+                canvas.width = this.canvasWidth;
+                canvas.height = this.canvasHeight;
+                
+                // 调整卡牌尺寸
+                this.cardWidth = 70;  // 增大卡牌尺寸
+                this.cardHeight = 112;
+                
+                // 重新排列卡牌，如果已存在
+                if (this.cards.length > 0) {
+                    this.arrangeCards();
+                }
+            }
+            
+            createCards() {
+                // 清空现有卡牌
+                this.cards = [];
+                
+                // 随机选择20张塔罗牌
+                const shuffledCards = [...tarotCardNames].sort(() => Math.random() - 0.5).slice(0, 22);
+                
+                // 创建卡牌对象
+                shuffledCards.forEach((card, index) => {
+                    this.cards.push(new TarotCard(index, card.name, card.description));
+                });
+                
+                // 排列卡牌
+                this.arrangeCards();
+            }
+            
+            arrangeCards() {
+                // 把卡牌放在画布中更靠下的位置，更靠近槽位
+                const deckWidth = (this.cards.length - 1) * (this.cardWidth * 0.3) + this.cardWidth;
+                let startX = (this.canvasWidth - deckWidth) / 2;
+                
+                this.cards.forEach((card, index) => {
+                    card.width = this.cardWidth;
+                    card.height = this.cardHeight;
+                    card.x = startX + index * (this.cardWidth * 0.3);
+                    card.y = 150; // 调整垂直位置，使其更靠近底部的槽位
                     card.angle = 0;
-                }
-            });
-        }
-        
-        // 绘制卡片背面
-        function drawCardBack(ctx, card) {
-            const gradient = ctx.createLinearGradient(card.x, card.y, card.x + card.width, card.y + card.height);
-            gradient.addColorStop(0, '#2c2c54');
-            gradient.addColorStop(1, '#34294f');
-            
-            // 卡片外框
-            ctx.save();
-            ctx.translate(card.x + card.width / 2, card.y + card.height / 2);
-            ctx.rotate(card.angle * Math.PI / 180);
-            
-            // 外发光效果(如果是悬浮状态)
-            if (card.isHovered && !card.isSelected && !card.isPlaced) {
-                ctx.shadowColor = 'rgba(215, 170, 100, 0.8)';
-                ctx.shadowBlur = 20;
+                    card.currentScale = 1;
+                });
             }
             
-            // 绘制卡片主体
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.roundRect(-card.width/2, -card.height/2, card.width, card.height, 6);
-            ctx.fill();
-            
-            // 绘制卡片边框
-            ctx.strokeStyle = card.isHovered && !card.isSelected && !card.isPlaced ? 
-                'rgba(215, 170, 100, 0.8)' : 'rgba(215, 170, 100, 0.3)';
-            ctx.lineWidth = card.isHovered && !card.isSelected && !card.isPlaced ? 2 : 1;
-            ctx.stroke();
-            
-            // 绘制卡片花纹
-            ctx.fillStyle = 'rgba(215, 170, 100, 0.2)';
-            ctx.font = '20px serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('✦', 0, 0);
-            
-            // 绘制花纹边框
-            ctx.strokeStyle = 'rgba(215, 170, 100, 0.3)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.roundRect(-card.width/2 + 10, -card.height/2 + 10, card.width - 20, card.height - 20, 4);
-            ctx.stroke();
-            
-            ctx.restore();
-        }
-        
-        // 绘制卡片正面
-        function drawCardFront(ctx, card) {
-            // 创建渐变背景
-            const gradient = ctx.createLinearGradient(card.x, card.y, card.x, card.y + card.height);
-            gradient.addColorStop(0, '#2c1362');
-            gradient.addColorStop(1, '#4e2a84');
-            
-            ctx.save();
-            ctx.translate(card.x + card.width / 2, card.y + card.height / 2);
-            ctx.rotate(card.angle * Math.PI / 180);
-            
-            // 外发光效果
-            ctx.shadowColor = 'rgba(215, 170, 100, 0.5)';
-            ctx.shadowBlur = 15;
-            
-            // 绘制卡片主体
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.roundRect(-card.width/2, -card.height/2, card.width, card.height, 6);
-            ctx.fill();
-            
-            // 绘制卡片边框
-            ctx.strokeStyle = 'rgba(215, 170, 100, 0.6)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            // 绘制卡片内容
-            ctx.fillStyle = 'rgba(215, 170, 100, 0.9)';
-            ctx.font = '14px serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(card.name, 0, -card.height/4);
-            
-            // 绘制符号
-            ctx.font = '22px serif';
-            ctx.fillText('✦', 0, 0);
-            
-            // 绘制花纹边框
-            ctx.strokeStyle = 'rgba(215, 170, 100, 0.4)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.roundRect(-card.width/2 + 8, -card.height/2 + 8, card.width - 16, card.height - 16, 3);
-            ctx.stroke();
-            
-            // 如果有时间位置，在底部显示
-            if (card.slotPosition) {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.font = '12px serif';
-                ctx.fillText(card.slotPosition, 0, card.height/3);
+            setupEventListeners() {
+                // 鼠标移动
+                canvas.addEventListener('mousemove', (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    this.mouseX = e.clientX - rect.left;
+                    this.mouseY = e.clientY - rect.top;
+                    
+                    // 检查卡牌悬停
+                    let hoveredCard = null;
+                    
+                    if (!this.isAnimating) {
+                        // 逆序检查，这样最上面的卡牌会先检测到
+                        for (let i = this.cards.length - 1; i >= 0; i--) {
+                            const card = this.cards[i];
+                            if (!card.placed && card.isMouseOver(this.mouseX, this.mouseY)) {
+                                hoveredCard = card;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // 更新卡牌高亮状态
+                    this.cards.forEach(card => {
+                        card.highlighted = card === hoveredCard;
+                        
+                        // 如果卡牌被高亮，稍微缩放它
+                        if (card.highlighted && !card.animating) {
+                            card.currentScale = 1.1;
+                            card.y = 40; // 稍微向上移动
+                        } else if (!card.animating && !card.placed) {
+                            card.currentScale = 1;
+                            card.y = 50;
+                        }
+                    });
+                });
+                
+                // 鼠标点击
+                canvas.addEventListener('click', (e) => {
+                    if (this.isAnimating) return;
+                    
+                    // 找到点击的卡牌
+                    let clickedCard = null;
+                    
+                    // 逆序检查，这样最上面的卡牌会先检测到
+                    for (let i = this.cards.length - 1; i >= 0; i--) {
+                        const card = this.cards[i];
+                        if (!card.placed && card.isMouseOver(this.mouseX, this.mouseY)) {
+                            clickedCard = card;
+                            break;
+                        }
+                    }
+                    
+                    if (clickedCard && this.selectedCards.length < 3) {
+                        this.currentCard = clickedCard;
+                        this.animateCardSelection(clickedCard);
+                    }
+                });
+                
+                // 监听窗口大小变化
+                window.addEventListener('resize', () => {
+                    this.resizeCanvas();
+                });
+                
+                // 放置卡牌按钮点击事件
+                placeCardBtn.addEventListener('click', () => {
+                    // 隐藏信息面板
+                    cardInfoPanel.style.display = 'none';
+                    overlay.style.display = 'none';
+                    
+                    if (this.currentCard && this.currentSlot) {
+                        this.placeCardInSlot(this.currentCard, this.currentSlot);
+                    }
+                });
             }
             
-            ctx.restore();
-        }
-        
-        // 主绘制函数
-        function drawTarotCards() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 动画：选中卡牌
+            animateCardSelection(card) {
+                this.isAnimating = true;
+                card.animating = true;
+                
+                // 计算卡牌飞向屏幕中央的动画
+                const targetX = this.canvasWidth / 2 - card.width / 2;
+                const targetY = this.canvasHeight / 2 - card.height / 2;
+                
+                // 存储目标位置
+                card.targetPosition = { x: targetX, y: targetY };
+                
+                // 设置动画时间
+                const animationDuration = 500; // 毫秒
+                const startTime = Date.now();
+                const startX = card.x;
+                const startY = card.y;
+                const startScale = card.currentScale;
+                const targetScale = 2.5; // 放大2.5倍
+                
+                // 设置卡牌旋转随机角度 (-5到5度)
+                const targetAngle = Math.random() * 10 - 5;
+                const startAngle = card.angle;
+                
+                // 动画函数
+                const animate = () => {
+                    const currentTime = Date.now();
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / animationDuration, 1);
+                    
+                    // 使用缓动函数使动画更自然
+                    const easeProgress = this.easeOutQuad(progress);
+                    
+                    // 更新卡牌位置
+                    card.x = startX + (targetX - startX) * easeProgress;
+                    card.y = startY + (targetY - startY) * easeProgress;
+                    card.currentScale = startScale + (targetScale - startScale) * easeProgress;
+                    card.angle = startAngle + (targetAngle - startAngle) * easeProgress;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        // 动画完成，显示卡牌信息
+                        this.showCardInfo(card);
+                        card.animating = false;
+                        this.isAnimating = false;
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
             
-            // 绘制神秘背景
-            drawMysticBackground();
-            
-            // 计算卡片位置
-            calculateCardPositions();
-            
-            // 先绘制普通卡片
-            cards.forEach(card => {
-                if (!card.isSelected && !card.isPlaced && currentAnimatingCard !== card) {
-                    drawCardBack(ctx, card);
+            // 显示卡牌信息面板
+            showCardInfo(card) {
+                // 设置卡牌信息
+                cardImage.src = 'quin1.jpg'; // 用一个默认图片
+                cardName.textContent = card.name;
+                cardDescription.textContent = card.description;
+                
+                // 找到一个可用的卡牌槽
+                let availableSlot = null;
+                for (const slot of cardSlots) {
+                    if (!slot.hasAttribute('data-filled')) {
+                        availableSlot = slot;
+                        break;
+                    }
                 }
-            });
-            
-            // 绘制选中的卡片
-            cards.forEach(card => {
-                if ((card.isSelected || card.isPlaced) && currentAnimatingCard !== card) {
-                    drawCardFront(ctx, card);
-                }
-            });
-            
-            // 绘制正在动画的卡片（最后绘制，使其在最上层）
-            if (currentAnimatingCard) {
-                if (currentAnimatingCard.isSelected || currentAnimatingCard.isPlaced) {
-                    drawCardFront(ctx, currentAnimatingCard);
+                
+                if (availableSlot) {
+                    this.currentSlot = availableSlot;
+                    
+                    // 高亮显示槽位
+                    cardSlots.forEach(slot => slot.classList.remove('highlight'));
+                    this.currentSlot.classList.add('highlight');
+                    
+                    // 显示面板和遮罩
+                    cardInfoPanel.style.display = 'block';
+                    overlay.style.display = 'block';
                 } else {
-                    drawCardBack(ctx, currentAnimatingCard);
+                    // 所有槽位已满，重置卡牌位置
+                    this.resetCardPosition(card);
+                }
+            }
+            
+            // 将卡牌放入槽位
+            placeCardInSlot(card, slot) {
+                // 标记槽位已填充
+                slot.setAttribute('data-filled', 'true');
+                slot.classList.add('filled');
+                
+                // 记录卡牌位置和关联槽位
+                card.position = slot.getAttribute('data-position');
+                card.placed = true;
+                card.slotElement = slot;
+                this.selectedCards.push(card);
+                
+                // 计算槽位中心位置 (世界坐标)
+                const slotRect = slot.getBoundingClientRect();
+                const canvasRect = canvas.getBoundingClientRect();
+                
+                const targetX = (slotRect.left + slotRect.width / 2) - canvasRect.left - card.width / 2;
+                const targetY = (slotRect.top + slotRect.height / 2) - canvasRect.top - card.height / 2;
+                
+                // 设置动画参数
+                const animationDuration = 600; // 毫秒
+                const startTime = Date.now();
+                const startX = card.x;
+                const startY = card.y;
+                const startScale = card.currentScale;
+                const targetScale = 1.8; // 卡牌在槽中的大小
+                const startAngle = card.angle;
+                const targetAngle = 0; // 卡牌在槽中为正向
+                
+                // 设置动画状态
+                this.isAnimating = true;
+                card.animating = true;
+                
+                // 动画函数
+                const animate = () => {
+                    const currentTime = Date.now();
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / animationDuration, 1);
+                    
+                    // 使用缓动函数
+                    const easeProgress = this.easeOutQuad(progress);
+                    
+                    // 更新卡牌位置
+                    card.x = startX + (targetX - startX) * easeProgress;
+                    card.y = startY + (targetY - startY) * easeProgress;
+                    card.currentScale = startScale + (targetScale - startScale) * easeProgress;
+                    card.angle = startAngle + (targetAngle - startAngle) * easeProgress;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        // 动画完成
+                        card.animating = false;
+                        this.isAnimating = false;
+                        
+                        // 更新选中卡牌计数
+                        cardsCounter.textContent = `已选择: ${this.selectedCards.length}/3`;
+                        
+                        // 如果已选择3张卡牌，显示查看结果按钮
+                        if (this.selectedCards.length === 3) {
+                            drawInstruction.textContent = "已抽取所有塔罗牌";
+                            viewResultBtn.classList.remove('hidden');
+                            
+                            // 更新查看结果按钮的链接
+                            const resultBtn = viewResultBtn.querySelector('a');
+                            if (resultBtn && master && question) {
+                                resultBtn.href = `result.html?master=${master}&question=${encodeURIComponent(question)}&spread=${spread || 'time-flow'}`;
+                            }
+                        } else {
+                            drawInstruction.textContent = `已抽取 ${this.selectedCards.length}/3 张牌，请继续选择`;
+                        }
+                        
+                        // 取消槽位高亮
+                        this.currentSlot.classList.remove('highlight');
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // 重置卡牌位置
+            resetCardPosition(card) {
+                // 如果所有槽位已满，将卡牌动画回原位
+                const originalX = card.x;
+                const originalY = card.y;
+                const originalScale = card.currentScale;
+                const originalAngle = card.angle;
+                
+                const animationDuration = 500; // 毫秒
+                const startTime = Date.now();
+                
+                // 设置动画状态
+                this.isAnimating = true;
+                card.animating = true;
+                
+                // 动画函数
+                const animate = () => {
+                    const currentTime = Date.now();
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / animationDuration, 1);
+                    
+                    // 使用缓动函数
+                    const easeProgress = this.easeOutQuad(progress);
+                    
+                    // 更新卡牌位置
+                    card.x = originalX;
+                    card.y = originalY;
+                    card.currentScale = originalScale;
+                    card.angle = originalAngle;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        // 动画完成
+                        card.animating = false;
+                        this.isAnimating = false;
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // 缓动函数
+            easeOutQuad(t) {
+                return t * (2-t);
+            }
+            
+            // 绘制函数
+            draw() {
+                // 清空画布
+                ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+                
+                // 绘制一些装饰星星
+                this.drawStars();
+                
+                // 先绘制牌列中的牌
+                this.cards.forEach(card => {
+                    if (!card.placed) {
+                        card.draw(ctx);
+                    }
+                });
+                
+                // 根据卡牌对应的position顺序排序
+                const positionOrder = {"过去": 0, "现在": 1, "未来": 2};
+                const sortedPlacedCards = [...this.selectedCards].sort((a, b) => {
+                    return positionOrder[a.position] - positionOrder[b.position];
+                });
+                
+                // 再绘制已放置的卡牌，确保它们显示在槽位上方
+                sortedPlacedCards.forEach(card => {
+                    card.draw(ctx);
+                });
+                
+                // 绘制指示线
+                if (this.selectedCards.length > 0) {
+                    // 如果有放置的卡牌，绘制卡牌与槽位之间的连接线
+                    this.drawCardConnectionLines();
+                }
+            }
+            
+            // 绘制卡牌与槽位之间的连接线
+            drawCardConnectionLines() {
+                this.selectedCards.forEach(card => {
+                    if (card.slotElement) {
+                        // 绘制从卡牌中心到槽位中心的线
+                        const slotRect = card.slotElement.getBoundingClientRect();
+                        const canvasRect = canvas.getBoundingClientRect();
+                        
+                        // 计算槽位中心在canvas坐标系中的位置
+                        const slotCenterX = (slotRect.left + slotRect.width / 2) - canvasRect.left;
+                        const slotCenterY = (slotRect.top + slotRect.height / 2) - canvasRect.top;
+                        
+                        // 计算卡牌中心
+                        const cardCenterX = card.x + card.width / 2;
+                        const cardCenterY = card.y + card.height / 2;
+                        
+                        // 绘制连接线
+                        ctx.save();
+                        ctx.strokeStyle = 'rgba(215, 170, 100, 0.2)';
+                        ctx.lineWidth = 1;
+                        ctx.setLineDash([5, 3]);
+                        ctx.beginPath();
+                        ctx.moveTo(cardCenterX, cardCenterY);
+                        ctx.lineTo(slotCenterX, slotCenterY);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                });
+            }
+            
+            // 绘制背景星星
+            drawStars() {
+                const time = Date.now() / 1000;
+                const numStars = 50;
+                
+                for (let i = 0; i < numStars; i++) {
+                    const x = (Math.sin(i * 0.3 + time * 0.1) * 0.5 + 0.5) * this.canvasWidth;
+                    const y = (Math.cos(i * 0.5 + time * 0.1) * 0.5 + 0.5) * this.canvasHeight * 0.7;
+                    const size = (Math.sin(i + time) * 0.5 + 0.5) * 2 + 0.5;
+                    const alpha = (Math.sin(i * 0.2 + time * 0.5) * 0.5 + 0.5) * 0.3 + 0.1;
+                    
+                    ctx.fillStyle = `rgba(215, 170, 100, ${alpha})`;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
                 }
             }
             
             // 动画循环
-            requestAnimationFrame(drawTarotCards);
-        }
-        
-        // 绘制神秘背景
-        function drawMysticBackground() {
-            // 创建渐变背景
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, 'rgba(26, 26, 46, 0.2)');
-            gradient.addColorStop(0.5, 'rgba(22, 33, 62, 0.3)');
-            gradient.addColorStop(1, 'rgba(26, 26, 46, 0.2)');
-            
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // 绘制一些神秘点缀
-            for (let i = 0; i < 30; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 2 + 0.5;
-                const opacity = Math.random() * 0.5 + 0.1;
-                
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(215, 170, 100, ${opacity})`;
-                ctx.fill();
+            animate() {
+                this.draw();
+                requestAnimationFrame(() => this.animate());
             }
         }
         
-        // 检查鼠标是否悬浮在卡片上
-        function isMouseOverCard(x, y, card) {
-            return x >= card.x && 
-                   x <= card.x + card.width && 
-                   y >= card.y && 
-                   y <= card.y + card.height;
-        }
+        // 添加圆角矩形方法
+        CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+            if (w < 2 * r) r = w / 2;
+            if (h < 2 * r) r = h / 2;
+            this.beginPath();
+            this.moveTo(x + r, y);
+            this.arcTo(x + w, y, x + w, y + h, r);
+            this.arcTo(x + w, y + h, x, y + h, r);
+            this.arcTo(x, y + h, x, y, r);
+            this.arcTo(x, y, x + w, y, r);
+            this.closePath();
+            return this;
+        };
         
-        // 鼠标移动事件
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            // 重置所有卡片的悬浮状态
-            cards.forEach(card => {
-                if (!card.isSelected && !card.isPlaced) {
-                    card.isHovered = false;
-                }
-            });
-            
-            // 检查是否有卡片被悬浮
-            hoveredCard = null;
-            for (let i = cards.length - 1; i >= 0; i--) {
-                const card = cards[i];
-                if (!card.isSelected && !card.isPlaced && isMouseOverCard(x, y, card)) {
-                    card.isHovered = true;
-                    hoveredCard = card;
-                    break;
-                }
-            }
-            
-            // 更新鼠标样式
-            canvas.style.cursor = hoveredCard ? 'pointer' : 'default';
+        // 初始化应用
+        let app;
+        
+        // 确保DOM加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new TarotApp();
         });
         
-        // 鼠标点击事件
-        canvas.addEventListener('click', (e) => {
-            if (hoveredCard && !hoveredCard.isSelected && !hoveredCard.isPlaced && drawnCards < 3 && !currentAnimatingCard) {
-                selectCard(hoveredCard);
-            }
-        });
-        
-        // 选择卡片
-        function selectCard(card) {
-            currentAnimatingCard = card;
-            card.isSelected = true;
-            
-            // 播放抽取动画
-            const centerX = canvas.width / 2 - card.width / 2;
-            const centerY = canvas.height / 2 - card.height * 1.5;
-            
-            animateCard(card, centerX, centerY, 0, () => {
-                // 动画完成后暂停一会儿
-                setTimeout(() => {
-                    // 在下一个空闲卡槽放置卡片
-                    placeCardInSlot(card);
-                }, 800);
-            });
+        // 如果已加载完成则立即初始化
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            setTimeout(() => { app = new TarotApp(); }, 1);
         }
-        
-        // 将卡片放入卡槽
-        function placeCardInSlot(card) {
-            // 找到第一个空的卡槽
-            const emptySlotIndex = Array.from(slots).findIndex(slot => !slot.classList.contains('active'));
-            
-            if (emptySlotIndex !== -1) {
-                const slot = slots[emptySlotIndex];
-                const slotRect = slot.getBoundingClientRect();
-                const canvasRect = canvas.getBoundingClientRect();
-                
-                // 计算相对于canvas的位置
-                const slotX = slotRect.left - canvasRect.left + (slotRect.width - card.width) / 2;
-                const slotY = slotRect.top - canvasRect.top - card.height / 2;
-                
-                // 设置卡片槽位置信息
-                card.slotPosition = slot.dataset.position;
-                
-                // 卡片放入动画
-                animateCard(card, slotX, slotY, 0, () => {
-                    card.isPlaced = true;
-                    currentAnimatingCard = null;
-                    
-                    // 更新卡槽样式
-                    slot.classList.add('active');
-                    
-                    // 增加计数
-                    drawnCards++;
-                    
-                    // 更新指引文字
-                    if (drawnCards < 3) {
-                        drawInstruction.textContent = `已抽取 ${drawnCards}/3 张牌，请继续选择`;
-                    } else {
-                        drawInstruction.textContent = "已完成所有牌的抽取";
-                        viewResultBtn.classList.remove('hidden');
-                        
-                        // 更新查看结果按钮的链接
-                        const resultBtn = viewResultBtn.querySelector('a');
-                        if (resultBtn && master && question) {
-                            resultBtn.href = `result.html?master=${master}&question=${encodeURIComponent(question)}&spread=${spread || 'time-flow'}`;
-                        }
-                    }
-                });
-            }
-        }
-        
-        // 卡片动画函数
-        function animateCard(card, targetX, targetY, targetAngle, callback) {
-            const startX = card.x;
-            const startY = card.y;
-            const startAngle = card.angle;
-            const duration = 1000; // 动画持续时间（毫秒）
-            const startTime = Date.now();
-            
-            function animate() {
-                const currentTime = Date.now();
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                // 使用缓动函数使动画更流畅
-                const easeProgress = easeOutCubic(progress);
-                
-                // 更新卡片位置
-                card.x = startX + (targetX - startX) * easeProgress;
-                card.y = startY + (targetY - startY) * easeProgress;
-                card.angle = startAngle + (targetAngle - startAngle) * easeProgress;
-                
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    if (callback) callback();
-                }
-            }
-            
-            animate();
-        }
-        
-        // 缓动函数
-        function easeOutCubic(x) {
-            return 1 - Math.pow(1 - x, 3);
-        }
-        
-        // 开始绘制
-        drawTarotCards();
     </script>
 </body>
 </html> 
